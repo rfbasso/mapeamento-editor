@@ -5,12 +5,10 @@ import { store } from './redux/store';
 import Header from './components/header/header';
 import { CanvasProvider } from './contexts/canvasContext';
 import SideMenu from './components/sideMenu/sideMenu';
-import { ThirdwebProvider } from 'thirdweb/react';
 
 function App() {
   return (
     <div className="App">
-      <ThirdwebProvider>
         {/* Redux Provider wrapping the entire application to provide access to Redux store */}
         <Provider store={store}>
           {/* Canvas Provider wrapping components that interact with canvas-related context */}
@@ -19,7 +17,7 @@ function App() {
             <Header />
 
             {/* Flex container to layout ImageView and SideMenu horizontally */}
-            <div className="flex">
+            <div className="flex" style={{maxHeight:'80vh'}}>
               {/* Container for ImageView component */}
               <div className="viewParent">
                 <ImageView />
@@ -30,7 +28,6 @@ function App() {
             </div>
           </CanvasProvider>
         </Provider>
-      </ThirdwebProvider>
     </div>
   );
 }

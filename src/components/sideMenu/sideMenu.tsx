@@ -43,8 +43,6 @@ export default function SideMenu() {
           <Settings />
           {/* Divider */}
           <hr className={styles.hr} />
-          {/* Component for managing layers */}
-          <Layers />
         </>
       )}
     </div>

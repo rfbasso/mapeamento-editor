@@ -17,57 +17,58 @@ import { selectImagePreview } from '../../redux/slices/imageSlice';
  * @returns A React component that renders buttons for drawing shapes and a delete button.
  */
 const DrawShape = () => {
-  const { canvasRef, selectedShapes, removeSelectedObjects } = useContext(CanvasContext);
-  const [shapeType, setShapeType] = useState<ShapeType>(ShapeType.LINE);
-  const { startDrawing, isDrawing } = useDrawShape(shapeType);
-  const imagePreview = useSelector(selectImagePreview);
+    const { canvasRef, selectedShapes, removeSelectedObjects } = useContext(CanvasContext);
+    const [shapeType, setShapeType] = useState<ShapeType>(ShapeType.LINE);
+    const { startDrawing, isDrawing } = useDrawShape(shapeType);
+    const imagePreview = useSelector(selectImagePreview);
 
-  /**
-   * Renders a button for a specific shape.
-   *
-   * @param shapeType - The type of shape to draw.
-   * @param selected - indicates if this shape was selected
-   * @returns A React component that renders a button for a specific shape.
-   */
-  const renderShapeButton = (shapeType: ShapeType, selected: boolean) => (
-    <ShapeButton
-      shapeType={shapeType}
-      setShapeType={setShapeType}
-      disabled={!canvasRef?.current}
-      startDrawing={startDrawing}
-      selected={selected}
-    />
-  );
+    /**
+     * Renders a button for a specific shape.
+     *
+     * @param shapeType - The type of shape to draw.
+     * @param selected - indicates if this shape was selected
+     * @returns A React component that renders a button for a specific shape.
+     */
+    const renderShapeButton = (shapeType: ShapeType, selected: boolean) => (
+        <ShapeButton
+            shapeType={shapeType}
+            setShapeType={setShapeType}
+            disabled={!canvasRef?.current}
+            startDrawing={startDrawing}
+            selected={selected}
+        />
+    );
 
-  return (
-    <div>
-      <div className={styles.header}>
-        {selectedShapes?.length && selectedShapes?.length > 0 && (
-          <button onClick={removeSelectedObjects} className={styles.deleteButton}>
-            Delete
-          </button>
-        )}
-        Shapes
-      </div>
-      <div>
-        <div className={styles.shapeRow}>
-          {renderShapeButton(ShapeType.LINE, isDrawing && shapeType === ShapeType.LINE)}
-          {renderShapeButton(ShapeType.SQUARE, isDrawing && shapeType === ShapeType.SQUARE)}
-          {renderShapeButton(ShapeType.RECT, isDrawing && shapeType === ShapeType.RECT)}
+    return (
+        <div>
+            <div className={styles.header}>
+                <button onClick={removeSelectedObjects} className={selectedShapes !== null && selectedShapes.length > 0 ? "btn btn-danger" : "btn btn-danger disabled" } disabled={selectedShapes !== null && selectedShapes.length > 0}>
+                    Apagar
+                </button>
+                <button onClick={removeSelectedObjects} className={selectedShapes !== null && selectedShapes.length > 0 ? "btn btn-primary" : "btn btn-primary disabled" } disabled={selectedShapes !== null && selectedShapes.length > 0}>
+                    Editar
+                </button>
+            </div>
+            <hr className={styles.hr} />
+            <div>
+                <div className={styles.shapeRow}>
+                    {renderShapeButton(ShapeType.POLYGON, isDrawing && shapeType === ShapeType.POLYGON)}
+                    {renderShapeButton(ShapeType.ELLIPSE, isDrawing && shapeType === ShapeType.ELLIPSE)}
+                    {renderShapeButton(ShapeType.RECT, isDrawing && shapeType === ShapeType.RECT)}
+                </div>
+                {/*<div className={styles.shapeRow}>*/}
+                {/*    {renderShapeButton(ShapeType.CIRCLE, isDrawing && shapeType === ShapeType.CIRCLE)}*/}
+                {/*    {renderShapeButton(ShapeType.LINE, isDrawing && shapeType === ShapeType.LINE)}*/}
+                {/*    {renderShapeButton(ShapeType.TEXT, isDrawing && shapeType === ShapeType.TEXT)}*/}
+                {/*</div>*/}
+                {/*<div className={styles.shapeRow}>*/}
+                {/*    {renderShapeButton(ShapeType.SQUARE, isDrawing && shapeType === ShapeType.SQUARE)}*/}
+                {/*    {renderShapeButton(ShapeType.POLYLINE, isDrawing && shapeType === ShapeType.POLYLINE)}*/}
+                {/*    {renderShapeButton(ShapeType.TRIANGLE, isDrawing && shapeType === ShapeType.TRIANGLE)}*/}
+                {/*</div>*/}
+            </div>
         </div>
-        <div className={styles.shapeRow}>
-          {renderShapeButton(ShapeType.CIRCLE, isDrawing && shapeType === ShapeType.CIRCLE)}
-          {renderShapeButton(ShapeType.ELLIPSE, isDrawing && shapeType === ShapeType.ELLIPSE)}
-          {renderShapeButton(ShapeType.TEXT, isDrawing && shapeType === ShapeType.TEXT)}
-        </div>
-        <div className={styles.shapeRow}>
-          {renderShapeButton(ShapeType.POLYGON, isDrawing && shapeType === ShapeType.POLYGON)}
-          {renderShapeButton(ShapeType.POLYLINE, isDrawing && shapeType === ShapeType.POLYLINE)}
-          {renderShapeButton(ShapeType.TRIANGLE, isDrawing && shapeType === ShapeType.TRIANGLE)}
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default DrawShape;
@@ -84,22 +85,22 @@ export default DrawShape;
  * @returns A React component that renders a button for a specific shape.
  */
 function ShapeButton(props: {
-  startDrawing: () => void;
-  disabled: boolean;
-  shapeType: ShapeType;
-  setShapeType: React.Dispatch<React.SetStateAction<ShapeType>>;
-  selected: boolean;
+    startDrawing: () => void;
+    disabled: boolean;
+    shapeType: ShapeType;
+    setShapeType: React.Dispatch<React.SetStateAction<ShapeType>>;
+    selected: boolean;
 }) {
-  return (
-    <button
-      onClick={() => {
-        props.setShapeType(props.shapeType);
-        props.startDrawing();
-      }}
-      disabled={props.disabled}
-      className={classNames(styles['shapeButton'], props.selected ? styles.selected : '')}
-    >
-      <img src={'/shapes/' + props.shapeType.toLowerCase() + '.png'} style={{ width: '2rem' }} />
-    </button>
-  );
+    return (
+        <button
+            onClick={() => {
+                props.setShapeType(props.shapeType);
+                props.startDrawing();
+            }}
+            disabled={props.disabled}
+            className={classNames(styles['shapeButton'], props.selected ? styles.selected : '')}
+        >
+            <img src={'/shapes/' + props.shapeType.toLowerCase() + '.png'} style={{ width: '2rem' }} />
+        </button>
+    );
 }
