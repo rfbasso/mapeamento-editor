@@ -35,6 +35,7 @@ const canvasSlice = createSlice({
     },
     setFillColor(state, action: PayloadAction<string>) {
       state.fillColor = action.payload;
+      state.strokeColor = action.payload;
     },
   },
 });

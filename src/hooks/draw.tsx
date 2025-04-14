@@ -59,7 +59,7 @@ const useDrawShape = (shapeType: ShapeType) => {
   const [originY, setOriginY] = useState(0);
 
   // Selectors to get current style settings from Redux store
-  const strokeColor = useSelector(selectStrokeColor);
+  const strokeColor = useSelector(selectFillColor);
   const strokeWidth = useSelector(selectStrokewidth);
   const fillColor = useSelector(selectFillColor);
   const fontSize = useSelector(selectFontSize);
@@ -126,6 +126,7 @@ const useDrawShape = (shapeType: ShapeType) => {
             lockRotation: false,
             selectable: true,
             hasControls: true,
+            opacity: 0.5,
             id,
           });
           canvasRef.current.add(newEllipse);
@@ -147,6 +148,7 @@ const useDrawShape = (shapeType: ShapeType) => {
             lockRotation: false,
             selectable: true,
             hasControls: true,
+            opacity: 0.5,
             id,
           });
 
@@ -277,6 +279,7 @@ const useDrawShape = (shapeType: ShapeType) => {
               ? new fabric.Polygon(polygonPoints, {
                   fill: fillColor,
                   stroke: strokeColor,
+                  opacity: 0.5,
                   strokeWidth,
                   selectable: true,
                   hasControls: true,
@@ -304,6 +307,30 @@ const useDrawShape = (shapeType: ShapeType) => {
             canvasRef?.current?.remove(line); // Remove temporary lines
           }
           setLines([]); // Clear lines state
+
+
+
+          let editing = false;
+          polygon.on('mousedblclick', () => {
+            editing = !editing;
+            // @ts-ignore
+            console.log(fabric.controlsUtils);
+            /*if (editing) {
+              polygon.cornerStyle = 'circle';
+              polygon.cornerColor = 'rgba(0,0,255,0.5)';
+              polygon.hasBorders = false;
+              // @ts-ignore
+              polygon.controls = fabric.controlsUtils.createPolyControls(polygon);
+            } else {
+              polygon.cornerColor = 'blue';
+              polygon.cornerStyle = 'rect';
+              polygon.hasBorders = true;
+              // @ts-ignore
+              polygon.controls = fabric.controlsUtils.createObjectDefaultControls();
+            }
+            polygon.setCoords();
+            canvasRef?.current?.requestRenderAll();*/
+          });
 
           if (canvasRef?.current) {
             canvasRef.current.defaultCursor = 'default'; // Reset cursor to default
@@ -378,12 +405,12 @@ const useDrawShape = (shapeType: ShapeType) => {
     originY,
   ]);
 
-  // Effect to update selected shapes' styles when related state changes
+  // Effect to update selected shapes' backgroundcolor when related state changes
   useEffect(() => {
-    if (selectedShapes && canvasRef?.current) {
-      selectedShapes.forEach((shape) => {
+    if (canvasRef?.current && canvasRef?.current.getObjects().length > 0) {
+      canvasRef?.current.getObjects().forEach((shape) => {
         if (shape.type !== 'textbox') {
-          shape.set('stroke', strokeColor);
+          shape.set('stroke', fillColor);
           shape.set('strokeWidth', strokeWidth);
           if (shape.type !== 'line') shape.set('fill', fillColor);
         } else {
@@ -394,7 +421,8 @@ const useDrawShape = (shapeType: ShapeType) => {
 
       canvasRef.current.renderAll(); // Render canvas with updated styles
     }
-  }, [strokeColor, selectedShapes, canvasRef, fontSize, strokeWidth, fillColor, textColor]);
+  }, [canvasRef, fillColor]);
+
 
   // Effect to handle keyboard events for deleting selected objects
   useEffect(() => {
